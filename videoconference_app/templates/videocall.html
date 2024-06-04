@@ -1,0 +1,92 @@
+{% load static %}
+<html>
+
+<head>
+    <style>
+        #root {
+            width: 100vw;
+            height: 100vh;
+            }
+    </style>
+</head>
+<link rel="stylesheet" href="{% static 'css/chatbot.css' %}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,1,0" />
+<script src="{% static 'js/chatbot.js' %}" defer></script>
+
+<body>
+    <div id="root"></div>
+    {% comment %} <button class="chatbot-toggler">
+      <span class="material-symbols-rounded">mode_comment</span>
+      <span class="material-symbols-outlined">close</span>
+    </button>
+    <div class="chatbot">
+      <header>
+        <h2>Chatbot</h2>
+        <span class="close-btn material-symbols-outlined">close</span>
+      </header>
+      <ul class="chatbox">
+        <li class="chat incoming">
+          <span class="material-symbols-outlined">smart_toy</span>
+          <p>Hi there 👋<br>How can I help you today?</p>
+        </li>
+      </ul>
+      <div class="chat-input">
+        <textarea placeholder="Enter a message..." spellcheck="false" required></textarea>
+        <span id="send-btn" class="material-symbols-rounded">send</span>
+      </div>
+    </div> {% endcomment %}
+</body>
+<script src="https://unpkg.com/@zegocloud/zego-uikit-prebuilt/zego-uikit-prebuilt.js"></script>
+<script>
+window.onload = function () {
+    function getUrlParams(url) {
+        let urlStr = url.split('?')[1];
+        const urlSearchParams = new URLSearchParams(urlStr);
+        const result = Object.fromEntries(urlSearchParams.entries());
+        return result;
+    }
+
+
+        // Generate a Token by calling a method.
+        // @param 1: appID
+        // @param 2: serverSecret
+        // @param 3: Room ID
+        // @param 4: User ID
+        // @param 5: Username
+    const roomID = getUrlParams(window.location.href)['roomID'] || (Math.floor(Math.random() * 10000) + "");
+    const userID = Math.floor(Math.random() * 10000) + "";
+    const userName = "userName" + userID;
+    const appID = 1632621667;
+    const serverSecret = "8cec256724c61c2dbceffde2ef76c6fa";
+    const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, userID, userName);
+
+    
+        const zp = ZegoUIKitPrebuilt.create(kitToken);
+        zp.joinRoom({
+            container: document.querySelector("#root"),
+            sharedLinks: [{
+                name: 'Personal link',
+                url: window.location.protocol + '//' + window.location.host  + window.location.pathname + '?roomID=' + roomID,
+            }],
+            scenario: {
+                mode: ZegoUIKitPrebuilt.VideoConference,
+            },
+                
+           	turnOnMicrophoneWhenJoining: true,
+           	turnOnCameraWhenJoining: true,
+           	showMyCameraToggleButton: true,
+           	showMyMicrophoneToggleButton: true,
+           	showAudioVideoSettingsButton: true,
+           	showScreenSharingButton: true,
+           	showTextChat: true,
+           	showUserList: true,
+           	maxUsers: 50,
+           	layout: "Auto",
+           	showLayoutButton: true,
+         
+            });
+}
+</script>
+
+</html>
